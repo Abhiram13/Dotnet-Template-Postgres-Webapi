@@ -4,6 +4,9 @@ using Abhiram.Extensions.DotEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using UrlShortner.Services;
+using Microsoft.AspNetCore.Identity;
+using UrlShortner.Models;
+using UrlShortner.Helper;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 DotEnvironmentVariables.Load();
@@ -15,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UrlService>();
 builder.Services.AddScoped<MetaDataService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<PasswordHash>();
 builder.Services.AddDbContext<UrlDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")!));
 builder.WebHost.ConfigureKestrel((_, server) =>
 {

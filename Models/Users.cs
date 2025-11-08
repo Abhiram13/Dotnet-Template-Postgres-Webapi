@@ -31,9 +31,19 @@ public enum Roles
 [Table("users")]
 public class Users : DBTable
 {
+    [Column("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
+
+    [Column("role")]
+    [JsonPropertyName("role")]
     public Roles Role { get; set; }
+
+    [Column("username")]
+    [JsonPropertyName("username")]
     public string UserName { get; set; } = string.Empty;
+
+    [Column("password")]
+    [JsonPropertyName("password")]
     public string Password { get; set; } = string.Empty;
-    public string Hash { get; set; } = string.Empty;    
 }
