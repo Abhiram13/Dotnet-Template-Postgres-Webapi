@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using UrlShortner.Models;
 
-// TODO: RENAME THIS NAMESPACE TO MATCH PROJECT STRUCTURE
-namespace PostgresWebApiTemplate;
+namespace UrlShortner;
 
-// TODO: RENAME THIS CLASS TO MATCH PROJECT STRUCTURE
-public class DBContext : DbContext
+public class UrlDbContext : DbContext
 {
-    public DBContext(DbContextOptions<DBContext> options) : base(options) { }
-
-    // TODO: ADD DB SET PROPERTIES
-    // public DbSet<T> Property { get; set; }
+    public UrlDbContext(DbContextOptions<UrlDbContext> options) : base(options) { }
+    
+    public DbSet<Url> UrlDbSet { get; set; }
+    public DbSet<UrlMetaData> UrlMetaData { get; set; }
 }

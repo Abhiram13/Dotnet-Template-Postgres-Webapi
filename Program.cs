@@ -1,8 +1,9 @@
-using PostgresWebApiTemplate;
+using UrlShortner;
 using Abhiram.Abstractions.Logging;
 using Abhiram.Extensions.DotEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using UrlShortner.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 DotEnvironmentVariables.Load();
@@ -12,11 +13,9 @@ builder.Services.AddRouting();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DBContext>(options =>
-{
-    // TODO: UPDATE EITHER WITH .ENV OR app.settings.json
-    options.UseNpgsql(builder.Configuration.GetConnectionString("")!);
-});
+builder.Services.AddScoped<UrlService>();
+builder.Services.AddScoped<MetaDataService>();
+builder.Services.AddDbContext<UrlDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")!));
 builder.WebHost.ConfigureKestrel((_, server) =>
 {
     string portNumber = Environment.GetEnvironmentVariable("PORT") ?? "3000";
@@ -30,7 +29,7 @@ using (IServiceScope? scope = app.Services.CreateScope())
 {
     try
     {
-        DBContext context = scope.ServiceProvider.GetRequiredService<DBContext>();
+        UrlDbContext context = scope.ServiceProvider.GetRequiredService<UrlDbContext>();
         context.Database.Migrate();
     }
     catch (Exception e)
