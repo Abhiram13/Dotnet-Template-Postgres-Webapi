@@ -49,4 +49,14 @@ public class UserService
 
         return token;
     }
+
+    public async Task<List<Users>> GetAllUserAsync()
+    {
+        return await _usersDbSet.ToListAsync();
+    }
+
+    public async Task<Users?> GetByIdAsync(int userId)
+    {
+        return await _usersDbSet.FirstOrDefaultAsync(u => u.Id == userId);
+    }
 }

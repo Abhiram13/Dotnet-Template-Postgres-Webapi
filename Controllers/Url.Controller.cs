@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrlShortner.Helper;
 using UrlShortner.Models;
+using UrlShortner.Services;
 
 namespace UrlShortner.Controllers;
 
@@ -10,20 +12,19 @@ namespace UrlShortner.Controllers;
 public class UrlController : BaseApiController
 {
     private readonly ILogger<UrlController> _logger;
-    private readonly DbSet<Url> _urlDbSet;
-    private readonly UrlDbContext _context;
+    private readonly UrlService _urlService;
 
-    public UrlController(ILogger<UrlController> logger, UrlDbContext context)
+    public UrlController(ILogger<UrlController> logger, UrlService urlService)
     {
         _logger = logger;
-        _urlDbSet = context.UrlDbSet;
-        _context = context;
+        _urlService = urlService;
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> GetAllUrlsAsync()
     {
-        _logger.LogInformation("Hello");
-        return Ok("Hello. This is Postgres Template");
-    }    
+        List<Url> urls = await _urlService.GetAllUrlsAsync();
+
+        return Ok(urls);
+    }
 }

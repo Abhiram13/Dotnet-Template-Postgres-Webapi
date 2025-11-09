@@ -30,4 +30,21 @@ public class UserController : BaseController
 
         return Ok(new { token });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        List<Users> users = await _userService.GetAllUserAsync();
+        return Ok(users);
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetUserByIdAsync(int userId)
+    {
+        Users? user = await _userService.GetByIdAsync(userId);
+
+        if (user is null) return NotFound();
+
+        return Ok(user);
+    }
 }

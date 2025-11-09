@@ -32,11 +32,16 @@ public class UrlService
 
         return url;
     }
-    
+
     public async Task<Url> GetShortUrlByCodeAsync(string shortCode)
     {
         Url url = await _urlDbSet.Where(u => u.ShortCode == shortCode).FirstOrDefaultAsync() ?? new Url();
 
-        return url;  
+        return url;
+    }
+
+    public async Task<List<Url>> GetAllUrlsAsync()
+    {
+        return await _urlDbSet.ToListAsync();
     }
 }
