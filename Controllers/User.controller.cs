@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using UrlShortner.Models;
 using UrlShortner.Services;
@@ -6,7 +7,7 @@ namespace UrlShortner.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UserController : BaseController
+public class UserController : ControllerBase
 {
     private readonly UserService _userService;
 
@@ -34,6 +35,16 @@ public class UserController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
+        Console.WriteLine(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        Console.WriteLine(User.FindFirst(ClaimTypes.Role)?.Value);
+        Console.WriteLine(User.FindFirst(ClaimTypes.Expiration)?.Value);
+        Console.WriteLine(User.FindFirst(ClaimTypes.Expired)?.Value);        
+
+        foreach (Claim c in User.Claims)
+        {
+            Console.WriteLine("Key: {0}, Value: {1}", c.Type, c.Value);            
+        }
+
         List<Users> users = await _userService.GetAllUserAsync();
         return Ok(users);
     }

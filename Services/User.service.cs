@@ -11,9 +11,9 @@ public class UserService
     private readonly UrlDbContext _context;
     private readonly DbSet<Users> _usersDbSet;
     private readonly PasswordHash _hasher;
-    private readonly Jwt _jwt;
+    private readonly JwtService _jwt;
 
-    public UserService(UrlDbContext context, PasswordHash hasher, Jwt jwt)
+    public UserService(UrlDbContext context, PasswordHash hasher, JwtService jwt)
     {
         _context = context;
         _usersDbSet = context.UsersDbSet;

@@ -8,7 +8,7 @@ namespace UrlShortner.Controllers;
 
 [ApiController]
 [Route("")]
-public class InitController : BaseApiController
+public class InitController : ControllerBase
 {
     private readonly ILogger<InitController> _logger;    
     private readonly MetaDataService _metaService;

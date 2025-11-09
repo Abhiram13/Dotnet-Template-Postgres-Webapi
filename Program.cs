@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UrlService>();
 builder.Services.AddScoped<MetaDataService>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<Jwt>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddSingleton<PasswordHash>();
 builder.Services.AddDbContext<UrlDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")!));
 builder.Services.AddAuthentication(options =>
@@ -34,7 +34,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,

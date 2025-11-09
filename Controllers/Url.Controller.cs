@@ -8,8 +8,8 @@ using UrlShortner.Services;
 namespace UrlShortner.Controllers;
 
 [ApiController]
-[Route("url")]
-public class UrlController : BaseApiController
+[Route("api/urls")]
+public class UrlController : ControllerBase
 {
     private readonly ILogger<UrlController> _logger;
     private readonly UrlService _urlService;

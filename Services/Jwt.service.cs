@@ -4,25 +4,27 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using UrlShortner.Models;
 
-namespace UrlShortner.Helper;
+namespace UrlShortner.Services;
 
-public class Jwt
+public class JwtService
 {
     private readonly IConfiguration _configuration;
+    private readonly JwtSecurityTokenHandler _securityTokenHandler;
 
-    public Jwt(IConfiguration configuration)
+    public JwtService(IConfiguration configuration)
     {
         _configuration = configuration;
+        _securityTokenHandler = new JwtSecurityTokenHandler();
     }
 
     public string GenerateToken(Users user)
     {
         Claim[] claims = new Claim[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(ClaimTypes.Hash, Guid.NewGuid().ToString())
         };
 
         SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -36,6 +38,6 @@ public class Jwt
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return _securityTokenHandler.WriteToken(token);
     }
 }

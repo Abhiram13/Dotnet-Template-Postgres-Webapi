@@ -6,7 +6,7 @@ namespace UrlShortner.Controllers;
 
 [ApiController]
 [Route("urls")]
-public class UnAuthUrlController : BaseApiController
+public class UnAuthUrlController : ControllerBase
 {
     private readonly ILogger<UnAuthUrlController> _logger;
     private readonly UrlService _urlService;    
