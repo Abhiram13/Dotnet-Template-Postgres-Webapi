@@ -22,4 +22,12 @@ public class UserController : BaseController
 
         return Ok("User created successfully");
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginPayload)
+    {
+        string token = await _userService.LoginUserAsync(username: loginPayload.UserName, password: loginPayload.Password);
+
+        return Ok(new { token });
+    }
 }

@@ -17,9 +17,9 @@ public class PasswordHash
         return _hasher.HashPassword(user, password);
     }
 
-    public bool VerifyPassword(Users user, string password)
+    public PasswordVerificationResult VerifyPassword(Users user, string password)
     {
         PasswordVerificationResult result = _hasher.VerifyHashedPassword(user, user.Password, password);
-        return result == PasswordVerificationResult.Success;
+        return result;
     }
 }

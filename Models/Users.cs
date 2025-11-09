@@ -47,3 +47,12 @@ public class Users : DBTable
     [JsonPropertyName("password")]
     public string Password { get; set; } = string.Empty;
 }
+
+public class LoginDto
+{
+    [JsonPropertyName("username")]
+    public string UserName { get; set; } = string.Empty;
+
+    [JsonPropertyName("password")]
+    public string Password { get; set; } = string.Empty;
+}
