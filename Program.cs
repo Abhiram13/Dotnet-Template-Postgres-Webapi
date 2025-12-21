@@ -10,6 +10,8 @@ using UrlShortner.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UrlShortner.Interfaces;
+using UrlShortner.Repository;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -19,14 +21,19 @@ DotEnvironmentVariables.Load();
 
 builder.AddConsoleGoogleSeriLog(template: "[{Level:u3}] [TraceId: {trace_id}] [Source: {SourceContext}] {Message:lj}{NewLine}{Exception}");
 builder.Services.AddRouting();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UrlService>();
 builder.Services.AddScoped<MetaDataService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUrlRepository, UrlRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<Jwt>();
-builder.Services.AddSingleton<PasswordHash>();
+builder.Services.AddScoped<PasswordHash>();
 builder.Services.AddDbContext<UrlDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")!));
 builder.Services.AddAuthentication(options =>
 {
@@ -34,7 +41,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,

@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace UrlShortner.Models;
+namespace UrlShortner.Entities;
 
 [Table("urls")]
-public class Url : DBTable
+public class Url : BaseEntity
 {
     [Column("original_url")]
     [JsonPropertyName("original_url")]
@@ -21,22 +21,6 @@ public class Url : DBTable
     [Column("is_active")]
     [JsonPropertyName("is_active")]
     public bool IsActive { get; set; }
-}
 
-[Table("url_metadata")]
-public class UrlMetaData : DBTable
-{
-    [Column("visits")]
-    [JsonPropertyName("visits")]
-    public int Visits { get; set; } = 0;
-
-    [Column("url_id")]
-    [JsonPropertyName("url_id")]
-    public int UrlId { get; set; }
-}
-
-public class AddUrlDto
-{
-    [JsonPropertyName("url")]
-    public string Url { get; set; } = string.Empty;
+    public UrlMetaData Meta { get; set; } = default!;
 }

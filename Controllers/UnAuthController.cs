@@ -15,18 +15,11 @@ public class UnAuthUrlController : BaseApiController
     {
         _logger = logger;
         _urlService = urlService;
-    }
+    }    
 
-    [HttpPost]
-    public async Task<IActionResult> CreateShortUrlAsync([FromBody] AddUrlDto body)
-    {
-        Url url = await _urlService.CreateShortUrlAsync(body);
-        return Ok(url);
-    }
-
-    [HttpGet("{shortCode}")]
-    public async Task<IActionResult> GetMetaData([FromRoute] string shortCode)
-    {
-        return Ok("Returns Metadata of Short code URL");
-    }
+    // [HttpGet("{shortCode}")]
+    // public async Task<IActionResult> GetMetaData([FromRoute] string shortCode)
+    // {
+    //     return Ok("Returns Metadata of Short code URL");
+    // }
 }

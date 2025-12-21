@@ -2,6 +2,7 @@ using System.Data.Entity.Core;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using UrlShortner.Entities;
 using UrlShortner.Models;
 
 namespace UrlShortner.Services;
@@ -27,7 +28,7 @@ public class MetaDataService
 
     public async Task<UrlMetaData> CreateMetaData(int urlId)
     {
-        DateTime date = DateTime.UtcNow;
+        DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
         UrlMetaData data = new UrlMetaData
         {
             CreatedAt = date,
@@ -48,7 +49,7 @@ public class MetaDataService
 
         if (existing is null) throw new ObjectNotFoundException($"Url MetaData with given id {urlId} is not found");
 
-        existing.UpdatedAt = DateTime.UtcNow;
+        existing.UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         existing.Visits += 1;
 
         await _context.SaveChangesAsync();

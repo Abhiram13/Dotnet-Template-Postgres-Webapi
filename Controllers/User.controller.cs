@@ -15,36 +15,47 @@ public class UserController : BaseController
         _userService = service;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> RegisterUserAsync([FromBody] Users user)
+    [HttpPost]
+    public async Task<IActionResult> RegisterUserAsync([FromBody] CreateUserDto payload)
     {
-        Users result = await _userService.RegisterUserAsync(user);
-
-        return Ok("User created successfully");
+        await _userService.CreateUserAsync(payload);
+        return Ok(new ApiResponse
+        {
+            StatusCode = System.Net.HttpStatusCode.Created,
+            Message = "New user created successfully"
+        });
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginPayload)
-    {
-        string token = await _userService.LoginUserAsync(username: loginPayload.UserName, password: loginPayload.Password);
+    // [HttpPost("register")]
+    // public async Task<IActionResult> RegisterUserAsync([FromBody] Users user)
+    // {
+    //     Users result = await _userService.RegisterUserAsync(user);
 
-        return Ok(new { token });
-    }
+    //     return Ok("User created successfully");
+    // }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        List<Users> users = await _userService.GetAllUserAsync();
-        return Ok(users);
-    }
+    // [HttpPost("login")]
+    // public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginPayload)
+    // {
+    //     string token = await _userService.LoginUserAsync(username: loginPayload.UserName, password: loginPayload.Password);
 
-    [HttpGet("{userId}")]
-    public async Task<IActionResult> GetUserByIdAsync(int userId)
-    {
-        Users? user = await _userService.GetByIdAsync(userId);
+    //     return Ok(new { token });
+    // }
 
-        if (user is null) return NotFound();
+    // [HttpGet]
+    // public async Task<IActionResult> GetAllUsers()
+    // {
+    //     List<Users> users = await _userService.GetAllUserAsync();
+    //     return Ok(users);
+    // }
 
-        return Ok(user);
-    }
+    // [HttpGet("{userId}")]
+    // public async Task<IActionResult> GetUserByIdAsync(int userId)
+    // {
+    //     Users? user = await _userService.GetByIdAsync(userId);
+
+    //     if (user is null) return NotFound();
+
+    //     return Ok(user);
+    // }
 }

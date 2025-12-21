@@ -1,62 +1,83 @@
 using System.Data.Entity.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UrlShortner.Entities;
 using UrlShortner.Helper;
+using UrlShortner.Interfaces;
 using UrlShortner.Models;
 
 namespace UrlShortner.Services;
 
 public class UserService
 {
-    private readonly UrlDbContext _context;
-    private readonly DbSet<Users> _usersDbSet;
-    private readonly PasswordHash _hasher;
-    private readonly Jwt _jwt;
+    private readonly IUserRepository _repository;
+    private readonly PasswordHash _passwordHash;
 
-    public UserService(UrlDbContext context, PasswordHash hasher, Jwt jwt)
+    public UserService(IUserRepository repository, PasswordHash passwordHash)
     {
-        _context = context;
-        _usersDbSet = context.UsersDbSet;
-        _hasher = hasher;
-        _jwt = jwt;
+        _repository = repository;
+        _passwordHash = passwordHash;
     }
 
-    public async Task<Users> RegisterUserAsync(Users user)
+    public async Task CreateUserAsync(CreateUserDto payload)
     {
-        DateTime date = DateTime.UtcNow;
+        bool isUserNameExists = await _repository.IsUserNameExistAsync(payload.Username);
+        
+        if (isUserNameExists)
+        {
+            throw new BadHttpRequestException("User name already exists");
+        }
 
-        user.Password = _hasher.HashPassword(user, user.Password);
-        user.CreatedAt = date;
-        user.UpdatedAt = date;
+        DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
+        Users user = new Users
+        {
+            CreatedAt = date,
+            UpdatedAt = date,
+            UserName = payload.Username,
+            Name = payload.Name,
+            Role = payload.Role
+        };
 
-        await _usersDbSet.AddAsync(user);
-        await _context.SaveChangesAsync();
-
-        return user;
+        user.Password = _passwordHash.HashPassword(user, payload.Password);
+        await _repository.CreateUserAsync(user);
     }
 
-    public async Task<string> LoginUserAsync(string username, string password)
-    {
-        Users? user = await _usersDbSet.FirstOrDefaultAsync(u => u.UserName == username);
+    // public async Task<Users> RegisterUserAsync(Users user)
+    // {
+    //     DateTime date = DateTime.UtcNow;
 
-        if (user is null) throw new ObjectNotFoundException("User not found");
+    //     user.Password = _hasher.HashPassword(user, user.Password);
+    //     // user.CreatedAt = date;c
+    //     // user.UpdatedAt = date;
 
-        PasswordVerificationResult result = _hasher.VerifyPassword(user: user, password: password);
+    //     await _usersDbSet.AddAsync(user);
+    //     await _context.SaveChangesAsync();
 
-        if (result != PasswordVerificationResult.Success) throw new UnauthorizedAccessException();
+    //     return user;
+    // }
 
-        string token = _jwt.GenerateToken(user: user);
+    // public async Task<string> LoginUserAsync(string username, string password)
+    // {
+    //     Users? user = await _usersDbSet.FirstOrDefaultAsync(u => u.UserName == username);
 
-        return token;
-    }
+    //     if (user is null) throw new ObjectNotFoundException("User not found");
 
-    public async Task<List<Users>> GetAllUserAsync()
-    {
-        return await _usersDbSet.ToListAsync();
-    }
+    //     PasswordVerificationResult result = _hasher.VerifyPassword(user: user, password: password);
 
-    public async Task<Users?> GetByIdAsync(int userId)
-    {
-        return await _usersDbSet.FirstOrDefaultAsync(u => u.Id == userId);
-    }
+    //     if (result != PasswordVerificationResult.Success) throw new UnauthorizedAccessException();
+
+    //     string token = _jwt.GenerateToken(user: user);
+
+    //     return token;
+    // }
+
+    // public async Task<List<Users>> GetAllUserAsync()
+    // {
+    //     return await _usersDbSet.ToListAsync();
+    // }
+
+    // public async Task<Users?> GetByIdAsync(int userId)
+    // {
+    //     return await _usersDbSet.FirstOrDefaultAsync(u => u.Id == userId);
+    // }
 }
