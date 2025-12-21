@@ -26,6 +26,17 @@ public class UserController : BaseController
         });
     }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUserAsync([FromBody] LoginUserRequestDto payload)
+    {
+        LoginUserResponseDto response = await _userService.LoginUserAsync(payload);
+        return Ok(new ApiResponse<LoginUserResponseDto>
+        {
+            StatusCode = System.Net.HttpStatusCode.OK,
+            Result = response
+        });
+    }
+
     // [HttpPost("register")]
     // public async Task<IActionResult> RegisterUserAsync([FromBody] Users user)
     // {

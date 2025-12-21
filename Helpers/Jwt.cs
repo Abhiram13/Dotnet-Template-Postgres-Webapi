@@ -7,11 +7,11 @@ using UrlShortner.Models;
 
 namespace UrlShortner.Helper;
 
-public class Jwt
+public class JwtService
 {
     private readonly IConfiguration _configuration;
 
-    public Jwt(IConfiguration configuration)
+    public JwtService(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -23,7 +23,7 @@ public class Jwt
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
         SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));

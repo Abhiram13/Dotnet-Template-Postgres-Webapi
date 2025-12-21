@@ -12,11 +12,13 @@ public class UserService
 {
     private readonly IUserRepository _repository;
     private readonly PasswordHash _passwordHash;
+    private readonly JwtService _jwtService;
 
-    public UserService(IUserRepository repository, PasswordHash passwordHash)
+    public UserService(IUserRepository repository, PasswordHash passwordHash, JwtService jwtService)
     {
         _repository = repository;
         _passwordHash = passwordHash;
+        _jwtService = jwtService;
     }
 
     public async Task CreateUserAsync(CreateUserDto payload)
@@ -42,42 +44,26 @@ public class UserService
         await _repository.CreateUserAsync(user);
     }
 
-    // public async Task<Users> RegisterUserAsync(Users user)
-    // {
-    //     DateTime date = DateTime.UtcNow;
+    public async Task<LoginUserResponseDto> LoginUserAsync(LoginUserRequestDto payload)
+    {
+        Users? user = await _repository.GetByUsername(payload.Username);
 
-    //     user.Password = _hasher.HashPassword(user, user.Password);
-    //     // user.CreatedAt = date;c
-    //     // user.UpdatedAt = date;
+        if (user is null)
+        {
+            Console.WriteLine("username is invalid");
+            throw new UnauthorizedAccessException("Invalid Credentials provided");
+        }
 
-    //     await _usersDbSet.AddAsync(user);
-    //     await _context.SaveChangesAsync();
+        PasswordVerificationResult passwordResult = _passwordHash.VerifyPassword(user, payload.Password);
 
-    //     return user;
-    // }
+        if (passwordResult == PasswordVerificationResult.Failed)
+        {
+            Console.WriteLine("password is invalid");
+            throw new UnauthorizedAccessException("Invalid Credentials provided");
+        }
 
-    // public async Task<string> LoginUserAsync(string username, string password)
-    // {
-    //     Users? user = await _usersDbSet.FirstOrDefaultAsync(u => u.UserName == username);
+        string token = _jwtService.GenerateToken(user);
 
-    //     if (user is null) throw new ObjectNotFoundException("User not found");
-
-    //     PasswordVerificationResult result = _hasher.VerifyPassword(user: user, password: password);
-
-    //     if (result != PasswordVerificationResult.Success) throw new UnauthorizedAccessException();
-
-    //     string token = _jwt.GenerateToken(user: user);
-
-    //     return token;
-    // }
-
-    // public async Task<List<Users>> GetAllUserAsync()
-    // {
-    //     return await _usersDbSet.ToListAsync();
-    // }
-
-    // public async Task<Users?> GetByIdAsync(int userId)
-    // {
-    //     return await _usersDbSet.FirstOrDefaultAsync(u => u.Id == userId);
-    // }
+        return new LoginUserResponseDto { Token = token, Username = user.UserName };
+    }
 }

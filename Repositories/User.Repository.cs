@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UrlShortner.Entities;
+using UrlShortner.Helper;
 using UrlShortner.Interfaces;
+using UrlShortner.Models;
 
 namespace UrlShortner.Repository;
 
@@ -19,6 +22,12 @@ public class UserRepository : IUserRepository
     {
         await _userDbSet.AddAsync(user);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<Users?> GetByUsername(string userName)
+    {
+        Users? user = await _userDbSet.FirstAsync(u => u.UserName == userName);
+        return user;
     }
 
     public async Task<bool> IsUserNameExistAsync(string userName)
