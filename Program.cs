@@ -4,14 +4,13 @@ using Abhiram.Extensions.DotEnv;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using UrlShortner.Services;
-using Microsoft.AspNetCore.Identity;
-using UrlShortner.Models;
 using UrlShortner.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UrlShortner.Interfaces;
 using UrlShortner.Repository;
+using UrlShortner.Middlwares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -84,5 +83,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.Run();

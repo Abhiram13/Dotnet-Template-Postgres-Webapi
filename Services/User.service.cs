@@ -5,6 +5,7 @@ using UrlShortner.Entities;
 using UrlShortner.Helper;
 using UrlShortner.Interfaces;
 using UrlShortner.Models;
+using UrlShortner.Exceptions;
 
 namespace UrlShortner.Services;
 
@@ -27,7 +28,7 @@ public class UserService
         
         if (isUserNameExists)
         {
-            throw new BadHttpRequestException("User name already exists");
+            throw new BadRequestException("User name already exists");
         }
 
         DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -50,16 +51,14 @@ public class UserService
 
         if (user is null)
         {
-            Console.WriteLine("username is invalid");
-            throw new UnauthorizedAccessException("Invalid Credentials provided");
+            throw new UnauthorizedException("Invalid Username provided");
         }
 
         PasswordVerificationResult passwordResult = _passwordHash.VerifyPassword(user, payload.Password);
 
         if (passwordResult == PasswordVerificationResult.Failed)
         {
-            Console.WriteLine("password is invalid");
-            throw new UnauthorizedAccessException("Invalid Credentials provided");
+            throw new UnauthorizedException("Invalid Password provided");
         }
 
         string token = _jwtService.GenerateToken(user);
