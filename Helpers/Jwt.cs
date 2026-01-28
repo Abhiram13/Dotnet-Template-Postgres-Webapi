@@ -20,9 +20,9 @@ public class JwtService
     {
         Claim[] claims = new Claim[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("Username", user.UserName),
+            new Claim("UserId", user.Id.ToString()),
+            new Claim("UserRole", user.Role.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 

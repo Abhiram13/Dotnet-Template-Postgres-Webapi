@@ -20,6 +20,6 @@ public class InitController : BaseApiController
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok("Hello. This is a Url Shortnet project");
+        return Ok("Hello. This is a Url Shortner project");
     }    
 }
