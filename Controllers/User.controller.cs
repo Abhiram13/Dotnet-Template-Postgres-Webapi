@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UrlShortner.Models;
 using UrlShortner.Services;
@@ -5,8 +6,9 @@ using UrlShortner.Services;
 namespace UrlShortner.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/users")]
-public class UserController : BaseController
+public class UserController : BaseApiController
 {
     private readonly UserService _userService;
 
@@ -16,6 +18,7 @@ public class UserController : BaseController
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> RegisterUserAsync([FromBody] CreateUserDto payload)
     {
         await _userService.CreateUserAsync(payload);
@@ -27,6 +30,7 @@ public class UserController : BaseController
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> LoginUserAsync([FromBody] LoginUserRequestDto payload)
     {
         LoginUserResponseDto response = await _userService.LoginUserAsync(payload);

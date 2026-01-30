@@ -5,10 +5,12 @@ using UrlShortner.Helper;
 using UrlShortner.Models;
 using UrlShortner.Services;
 using UrlShortner.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UrlShortner.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/urls")]
 public class UrlController : BaseApiController
 {

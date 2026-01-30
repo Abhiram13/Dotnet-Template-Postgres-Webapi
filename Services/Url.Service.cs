@@ -38,15 +38,9 @@ public class UrlService
         return await _urlRepository.GeturlShortCodeDetailsAsync(shortCode);
     }
 
-    // public async Task<Url> GetShortUrlByCodeAsync(string shortCode)
-    // {
-    //     Url url = await _urlDbSet.Where(u => u.ShortCode == shortCode).FirstOrDefaultAsync() ?? new Url();
-
-    //     return url;
-    // }
-
-    // public async Task<List<Url>> GetAllUrlsAsync()
-    // {
-    //     return await _urlDbSet.ToListAsync();
-    // }
+    public async Task<string?> GetLongUrlAsync(string shortCode)
+    {
+        LongUrlDetails? result = await _urlRepository.GetLongUrlAsync(shortCode);
+        return result?.LongUrl;
+    }
 }

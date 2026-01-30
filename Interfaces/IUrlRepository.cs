@@ -7,4 +7,5 @@ public interface IUrlRepository
 {
     Task CreateShortUrlAsync(Url url);
     Task<ShortCodeDetails> GeturlShortCodeDetailsAsync(string urlShortCode);
+    Task<LongUrlDetails?> GetLongUrlAsync(string shortCode);
 }

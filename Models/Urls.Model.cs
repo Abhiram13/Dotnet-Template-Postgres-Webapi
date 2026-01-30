@@ -14,3 +14,9 @@ public record class ShortCodeDetails
     public int TotalVisits { get; init; }
     public bool IsActive { get; init; }
 }
+
+public record class LongUrlDetails
+{
+    public required string LongUrl { get; init; }
+    public required int UrlId { get; init; }
+}
