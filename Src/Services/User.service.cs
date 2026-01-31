@@ -1,4 +1,3 @@
-using System.Data.Entity.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UrlShortner.Entities;

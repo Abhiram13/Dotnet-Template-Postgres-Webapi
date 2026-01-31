@@ -20,7 +20,7 @@ public class UrlRepository : IUrlRepository
 
     public async Task CreateShortUrlAsync(Url url)
     {
-        await _urlDbSet.AddAsync(url);
+        _urlDbSet.Add(url);
         await _dbContext.SaveChangesAsync();
     }
 

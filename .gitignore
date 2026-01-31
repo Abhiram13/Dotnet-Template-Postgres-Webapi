@@ -1,4 +1,6 @@
-/bin
-/obj
-/.env
+*/bin
+*/obj
+*/.env
 /.vscode
+*.user
+.idea

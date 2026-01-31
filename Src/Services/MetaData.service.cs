@@ -1,4 +1,3 @@
-using System.Data.Entity.Core;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -47,7 +46,7 @@ public class MetaDataService
     {
         UrlMetaData? existing = await _metaDataDbSet.Where(m => m.UrlId == urlId).FirstOrDefaultAsync();
 
-        if (existing is null) throw new ObjectNotFoundException($"Url MetaData with given id {urlId} is not found");
+        if (existing is null) throw new KeyNotFoundException($"Url MetaData with given id {urlId} is not found");
 
         existing.UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         existing.Visits += 1;

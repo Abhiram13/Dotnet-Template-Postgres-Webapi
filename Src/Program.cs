@@ -11,6 +11,7 @@ using System.Text;
 using UrlShortner.Interfaces;
 using UrlShortner.Repository;
 using UrlShortner.Middlwares;
+using Microsoft.Extensions.DependencyInjection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string jwtKey = builder.Configuration["Jwt:Key"]!;
