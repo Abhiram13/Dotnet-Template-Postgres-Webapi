@@ -6,7 +6,7 @@ namespace IntegrationTests;
 
 public static class TestDbContextFactory
 {
-    public static UrlDbContext Create()
+    public static string? GetConnectionString()
     {
         IConfigurationRoot? configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
@@ -15,6 +15,12 @@ public static class TestDbContextFactory
 
         string? connectionString = configuration.GetConnectionString("TestDb");
 
+        return connectionString;
+    }
+
+    public static UrlDbContext Create()
+    {
+        string? connectionString = GetConnectionString();
         DbContextOptions<UrlDbContext>? options = new DbContextOptionsBuilder<UrlDbContext>()
             .UseNpgsql(connectionString)
             .Options;

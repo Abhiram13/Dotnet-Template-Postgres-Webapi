@@ -87,3 +87,5 @@ app.MapControllers();
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.Run();
+
+public partial class Program { }
