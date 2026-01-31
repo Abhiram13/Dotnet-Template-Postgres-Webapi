@@ -8,8 +8,10 @@ namespace UrlShortner.Helper
     {
         public static string Encode(string input)
         {
-            string CustomChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string customChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             const short SHORT_CODE_LENGTH = 6;
+            string uuid = Guid.NewGuid().ToString();
+            string updatedUrl = uuid + customChars;
 
             using (SHA256 algo = SHA256.Create())
             {
@@ -18,8 +20,8 @@ namespace UrlShortner.Helper
 
                 for (int i = 0; i < SHORT_CODE_LENGTH; i++)
                 {
-                    int index = bytes[i] % CustomChars.Length;
-                    builder.Append(CustomChars[index]);
+                    int index = bytes[i] % updatedUrl.Length;
+                    builder.Append(updatedUrl[index]);
                 }
 
                 return builder.ToString();

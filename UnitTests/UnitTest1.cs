@@ -9,11 +9,18 @@ namespace UnitTests;
 
 public class UnitTest1
 {
-    [Fact]
-    public void TestShortCodeGenerator()
+    [Theory]
+    [InlineData("https://www.google.com")]
+    public void TestShortCodeGenerator(string url)
     {
-        string helper = Hash.Encode("http://www.google.com");
-        Assert.Equal(7, helper.Length);
+        string helper = Hash.Encode(url);
+        string encode1 = Hash.Encode("http://www.google.com");
+        string encode2 = Hash.Encode("http://www.google.com");
+        
+        Assert.NotEqual(encode2, encode1);
+        Assert.Equal(6, helper.Length);
+        Assert.Equal(6, encode1.Length);
+        Assert.Equal(6, encode2.Length);
     }
 
     [Fact]
