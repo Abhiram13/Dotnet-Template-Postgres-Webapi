@@ -10,6 +10,16 @@ namespace IntegrationTests;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
+    public UrlDbContext GetDbContext()
+    {
+        return Services.CreateScope().ServiceProvider.GetRequiredService<UrlDbContext>();
+    }
+
+    public IServiceScope CreateScope()
+    {
+        return Services.CreateScope();
+    }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         DotEnvironmentVariables.Load();

@@ -22,7 +22,7 @@ public class UserController : BaseApiController
     public async Task<IActionResult> RegisterUserAsync([FromBody] CreateUserDto payload)
     {
         await _userService.CreateUserAsync(payload);
-        return Ok(new ApiResponse
+        return StatusCode(201, new ApiResponse
         {
             StatusCode = System.Net.HttpStatusCode.Created,
             Message = "New user created successfully"

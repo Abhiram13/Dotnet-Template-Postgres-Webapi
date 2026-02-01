@@ -12,6 +12,7 @@ using UrlShortner.Interfaces;
 using UrlShortner.Repository;
 using UrlShortner.Middlwares;
 using Microsoft.Extensions.DependencyInjection;
+using UrlShortner.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string jwtKey = builder.Configuration["Jwt:Key"]!;
@@ -50,6 +51,24 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtIssuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
+    };
+    
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
+        {
+            context.HandleResponse(); // stopping default behavior
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            ApiResponse response = new ApiResponse
+            {
+                StatusCode = HttpStatusCode.Unauthorized,
+                Message = "UnAuthorised"
+            };
+
+            return context.Response.WriteAsJsonAsync(response);
+        }
     };
 });
 builder.Services.AddAuthorization();

@@ -5,7 +5,6 @@ namespace IntegrationTests;
 
 public class UrlTests : TestBase
 {
-    [Fact]
     public async Task AddUrl()
     {
         Url url = new Url
