@@ -23,6 +23,21 @@ public class UserService
 
     public async Task CreateUserAsync(CreateUserDto payload)
     {
+        if (string.IsNullOrEmpty(payload.Name))
+        {
+            throw new BadRequestException("Name is required");
+        }
+
+        if (string.IsNullOrEmpty(payload.Password))
+        {
+            throw new BadRequestException("Password is required");
+        }
+
+        if (string.IsNullOrEmpty(payload.Username))
+        {
+            throw new BadRequestException("Username is required");
+        }
+        
         bool isUserNameExists = await _repository.IsUserNameExistAsync(payload.Username);
         
         if (isUserNameExists)
