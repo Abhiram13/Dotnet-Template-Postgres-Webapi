@@ -29,7 +29,7 @@ public class UrlController : BaseApiController
     public async Task<IActionResult> CreateShortUrlAsync([FromBody] AddUrlDto body)
     {
         await _urlService.CreateShortUrlAsync(body);
-        return Ok(new ApiResponse
+        return StatusCode(201, new ApiResponse
         {
             StatusCode = System.Net.HttpStatusCode.Created,
             Message = "Short Url is successfully created"

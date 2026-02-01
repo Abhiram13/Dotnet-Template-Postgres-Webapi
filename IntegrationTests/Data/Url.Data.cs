@@ -9,22 +9,33 @@ public abstract class TheoryTestData<T> : TheoryData<T> where T : class
     protected readonly DateOnly _currenDate = DateOnly.FromDateTime(DateTime.UtcNow); 
 }
 
-public class CreateUrlUnAuthData : TheoryTestData<CreateUrlUnAuthDef>
+public class CreateUrlData : TheoryTestData<CreateUrlDef>
 {
-    public CreateUrlUnAuthData()
+    public CreateUrlData()
     {
         SetData();
     }
 
     private void SetData()
     {
-        CreateUrlUnAuthDef payload = new CreateUrlUnAuthDef
+        CreateUrlDef payload = new CreateUrlDef
         {
             Url = "http://www.google.com",
             HttpStatusCode = HttpStatusCode.Unauthorized,
             ResponseStatusCode = HttpStatusCode.Unauthorized,
-            ResponseMessage = "Invalid credentials provided"
+            ResponseMessage = "Invalid credentials provided",
+            IsAuth = false
         };
         Add(payload);
+
+        CreateUrlDef authPayload = new CreateUrlDef
+        {
+            Url = "http://www.google.com",
+            HttpStatusCode = HttpStatusCode.Created,
+            ResponseStatusCode = HttpStatusCode.Created,
+            ResponseMessage = "Short Url is successfully created",
+            IsAuth = true
+        };
+        Add(authPayload);
     }
 }
