@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(options =>
             ApiResponse response = new ApiResponse
             {
                 StatusCode = HttpStatusCode.Unauthorized,
-                Message = "UnAuthorised"
+                Message = "Invalid credentials provided"
             };
 
             return context.Response.WriteAsJsonAsync(response);

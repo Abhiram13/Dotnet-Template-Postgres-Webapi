@@ -18,17 +18,16 @@ public class UrlApiTests : IClassFixture<TestWebApplicationFactory>
     }
 
     [Theory]
-    [ClassData(typeof(CreateUrlData))]
+    [ClassData(typeof(CreateUrlUnAuthData))]
     public async Task CreateUrl_UnAuth_Async(CreateUrlUnAuthDef payload)
     {
-        AddUrlDto request = new AddUrlDto { Url = payload.url };
+        AddUrlDto request = new AddUrlDto { Url = payload.Url };
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/urls", request);
-
-        Assert.Equal(payload.httpStatusCode, response.StatusCode);
-
         ApiResponse? result = await response.Content.ReadFromJsonAsync<ApiResponse>();
         
         Assert.NotNull(result);
-        Assert.Equal(payload.responseStatusCode, result!.StatusCode);        
+        Assert.Equal(payload.ResponseStatusCode, result!.StatusCode);    
+        Assert.Equal(payload.ResponseMessage, result.Message);
+        Assert.Equal(payload.HttpStatusCode, response.StatusCode);
     }
 }

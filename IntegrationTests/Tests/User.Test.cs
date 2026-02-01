@@ -48,5 +48,45 @@ public class UserApiTest : BaseIntegrationTest, IClassFixture<TestWebApplication
             Assert.Equal(payload.ResponseMessage, result.Message);
         }
     }
+
+    [Theory]
+    [ClassData(typeof(LoginUserData))]
+    public async Task LoginUserAsync(LoginUserDef payload)
+    {
+        await using (new UserTestsDisposal(_factory))
+        {
+            LoginUserRequestDto loginRequestPayload = payload.LoginPayload;
+            CreateUserDto createUserPayload = new  CreateUserDto { Name = "John", Password = "123", Role = Roles.Admin,  Username = "john" };
+            HttpResponseMessage createUserHttpResponse = await _httpClient.PostAsJsonAsync("/api/users/", createUserPayload);
+            ApiResponse? createUserApiResponse = await createUserHttpResponse.Content.ReadFromJsonAsync<ApiResponse>();
+            HttpResponseMessage loginUserHttpResponse = await _httpClient.PostAsJsonAsync("/api/users/login", loginRequestPayload);
+            
+            Assert.NotNull(createUserApiResponse);
+            Assert.NotNull(createUserApiResponse.Message);
+
+            if (payload.IsValid)
+            {
+                ApiResponse<LoginUserResponseDto>? loginUserApiResponse = await loginUserHttpResponse.Content.ReadFromJsonAsync<ApiResponse<LoginUserResponseDto>>();
+                Assert.NotNull(loginUserApiResponse);
+                Assert.NotNull(loginUserApiResponse?.Result);
+                Assert.NotNull(loginUserApiResponse.Result.Token);
+                Assert.NotEmpty(loginUserApiResponse.Result.Token);
+                Assert.Equal(payload.LoginPayload.Username, loginUserApiResponse.Result.Username);
+                Assert.Equal(payload.ResponseStatusCode, loginUserApiResponse.StatusCode);
+            }
+            else
+            {
+                ApiResponse? loginUserApiResponse = await loginUserHttpResponse.Content.ReadFromJsonAsync<ApiResponse>();
+                Assert.NotNull(loginUserApiResponse);
+                Assert.NotNull(loginUserApiResponse.Message);
+                Assert.Equal(payload.ResponseMessage, loginUserApiResponse.Message);
+                Assert.Equal(payload.ResponseStatusCode, loginUserApiResponse.StatusCode);
+            }
+            
+            Assert.Equal(HttpStatusCode.Created, createUserApiResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, createUserHttpResponse.StatusCode);
+            Assert.Equal(payload.HttpStatusCode, loginUserHttpResponse.StatusCode);
+        }
+    }
 }
 
