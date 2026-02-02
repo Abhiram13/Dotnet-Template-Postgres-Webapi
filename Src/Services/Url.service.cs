@@ -43,8 +43,13 @@ public class UrlService
     public async Task<string?> GetLongUrlAsync(string shortCode)
     {
         Url? result = await _urlRepository.GetLongUrlAsync(shortCode);
-        await _metaDataService.SaveAsync(result!.Id);
-        
-        return result.OriginalUrl;
+
+        if (result is not null)
+        {
+            await _metaDataService.SaveAsync(result.Id);
+            return result.OriginalUrl;
+        }
+
+        return null;
     }
 }

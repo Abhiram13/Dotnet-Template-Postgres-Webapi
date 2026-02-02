@@ -39,6 +39,7 @@ public sealed class UrlTestsDisposal : IAsyncDisposable
         {
             UrlDbContext db = scope.ServiceProvider.GetRequiredService<UrlDbContext>();
             await db.UrlDbSet.ExecuteDeleteAsync();
+            await db.UrlMetaData.ExecuteDeleteAsync();
         }
     }
 }

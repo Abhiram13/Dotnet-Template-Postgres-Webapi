@@ -11,7 +11,10 @@ public record CreateUrlDef
     public bool IsAuth { get; init; }
 };
 
-public record ShortCodeUrlDef
+public record ShortCodeDetailsDef
 {
-    // public required 
+    public HttpStatusCode HttpStatusCode { get; init; }
+    public HttpStatusCode ResponseStatusCode { get; init; }
+    public int TotalVisits  { get; init; }
+    public bool IsAuth  { get; init; }
 }

@@ -39,3 +39,23 @@ public class CreateUrlData : TheoryTestData<CreateUrlDef>
         Add(authPayload);
     }
 }
+
+public class ShortCodeDetailsData : TheoryTestData<ShortCodeDetailsDef>
+{
+    public ShortCodeDetailsData()
+    {
+        SetData();
+    }
+
+    private void SetData()
+    {
+        ShortCodeDetailsDef detail1 = new ShortCodeDetailsDef
+        {
+            HttpStatusCode = HttpStatusCode.OK,
+            ResponseStatusCode = HttpStatusCode.OK,
+            TotalVisits = 5,
+            IsAuth = true
+        };
+        Add(detail1);
+    }
+}
