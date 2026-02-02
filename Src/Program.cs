@@ -33,6 +33,7 @@ builder.Services.AddScoped<MetaDataService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUrlMetaDataRepository, UrlMetadataRepository>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<PasswordHash>();
 builder.Services.AddDbContext<UrlDbContext>(op => op.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")!));

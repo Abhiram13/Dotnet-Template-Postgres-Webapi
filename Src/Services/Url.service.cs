@@ -9,10 +9,12 @@ namespace UrlShortner.Services;
 public class UrlService
 {
     private readonly IUrlRepository _urlRepository;
+    private readonly MetaDataService _metaDataService;
 
-    public UrlService(IUrlRepository repository)
+    public UrlService(IUrlRepository repository, MetaDataService metaDataService)
     {
         _urlRepository = repository;
+        _metaDataService = metaDataService;
     }
 
     public async Task CreateShortUrlAsync(AddUrlDto body)
@@ -40,7 +42,9 @@ public class UrlService
 
     public async Task<string?> GetLongUrlAsync(string shortCode)
     {
-        LongUrlDetails? result = await _urlRepository.GetLongUrlAsync(shortCode);
-        return result?.LongUrl;
+        Url? result = await _urlRepository.GetLongUrlAsync(shortCode);
+        await _metaDataService.SaveAsync(result!.Id);
+        
+        return result.OriginalUrl;
     }
 }

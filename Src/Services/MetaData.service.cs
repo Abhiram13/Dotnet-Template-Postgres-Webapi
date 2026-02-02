@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using UrlShortner.Entities;
+using UrlShortner.Interfaces;
 using UrlShortner.Models;
 
 namespace UrlShortner.Services;
@@ -10,11 +11,13 @@ public class MetaDataService
 {
     private readonly DbSet<UrlMetaData> _metaDataDbSet;
     private readonly UrlDbContext _context;
+    private readonly IUrlMetaDataRepository  _urlMetaDataRepository;
 
-    public MetaDataService(UrlDbContext context)
+    public MetaDataService(UrlDbContext context, IUrlMetaDataRepository  urlMetaDataRepository)
     {
         _context = context;
         _metaDataDbSet = context.UrlMetaData;
+        _urlMetaDataRepository = urlMetaDataRepository;
     }
 
     public async Task<UrlMetaData?> GetMetaDataByUrlIdAsync(int urlId)
@@ -36,23 +39,21 @@ public class MetaDataService
             UpdatedAt = date,
         };
 
-        await _metaDataDbSet.AddAsync(data);
-        await _context.SaveChangesAsync();
-
+        await _urlMetaDataRepository.CreateMetadataAsync(data);
         return data;
     }
 
     public async Task<UrlMetaData> UpdateMetaData(int urlId)
     {
-        UrlMetaData? existing = await _metaDataDbSet.Where(m => m.UrlId == urlId).FirstOrDefaultAsync();
-
-        if (existing is null) throw new KeyNotFoundException($"Url MetaData with given id {urlId} is not found");
-
-        existing.UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
-        existing.Visits += 1;
-
-        await _context.SaveChangesAsync();
-
+        UrlMetaData? existing = await _urlMetaDataRepository.UpdateVisitsAsync(urlId);
         return existing;
+    }
+
+    public async Task<UrlMetaData> SaveAsync(int urlId)
+    {
+        UrlMetaData? existing = await GetMetaDataByUrlIdAsync(urlId);
+        UrlMetaData result = existing is null ? await CreateMetaData(urlId) : await UpdateMetaData(urlId);
+
+        return result;
     }
 }

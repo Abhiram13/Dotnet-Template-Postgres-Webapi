@@ -10,3 +10,8 @@ public record CreateUrlDef
     public required string ResponseMessage { get; init; }
     public bool IsAuth { get; init; }
 };
+
+public record ShortCodeUrlDef
+{
+    // public required 
+}

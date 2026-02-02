@@ -40,18 +40,19 @@ public class UrlRepository : IUrlRepository
         return details;
     }
 
-    public async Task<LongUrlDetails?> GetLongUrlAsync(string shortCode)
+    public async Task<Url?> GetLongUrlAsync(string shortCode)
     {
-        Url? longUrl = await _urlDbSet.Where(u => u.ShortCode == shortCode && u.IsActive == true).FirstAsync();
+        Url? longUrl = await _urlDbSet.Where(u => u.ShortCode == shortCode && u.IsActive == true).FirstOrDefaultAsync();
+        
         if (longUrl == null) return null;
 
-        UrlMetaData metaData = await _urlMetaData.Where(m => m.UrlId == longUrl.Id).FirstAsync();
-        DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
-        metaData.UpdatedAt = date;
-        metaData.Visits = ++metaData.Visits;
+        // UrlMetaData? metaData = await _urlMetaData.Where(m => m.UrlId == longUrl.Id).FirstOrDefaultAsync();
+        // DateOnly date = DateOnly.FromDateTime(DateTime.UtcNow);
+        // metaData.UpdatedAt = date;
+        // metaData.Visits = ++metaData.Visits;
+        //
+        // await _dbContext.SaveChangesAsync();
 
-        await _dbContext.SaveChangesAsync();
-
-        return new LongUrlDetails { LongUrl = longUrl.OriginalUrl, UrlId = longUrl.Id };
+        return longUrl;
     }
 }
